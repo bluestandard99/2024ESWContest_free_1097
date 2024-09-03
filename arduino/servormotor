@@ -1,0 +1,901 @@
+#include <Servo.h>
+
+// 서보 객체 선언
+Servo myservo1;
+Servo myservo2;
+Servo myservo3;
+Servo myservo4;
+Servo myservo5;
+Servo myservo6;
+Servo myservo7;
+Servo myservo8;
+
+// 각 서보모터에 대한 딜레이를 설정할 배열 선언
+int delays[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+// 각 서보모터에 대한 마지막 각도를 저장할 배열 선언
+int lastAngles[8] = {-1, -1, -1, -1, -1, -1, -1, -1};  // 초기값을 -1로 설정하여 아직 설정되지 않았음을 표시
+
+void setup() {
+  delay(1000);  // 초기 설정 전 1초간 대기
+  // 각 서보를 아두이노 핀에 연결
+  myservo1.attach(5);  // 핀 5에 myservo1 연결
+  myservo2.attach(6);  // 핀 6에 myservo2 연결
+  myservo3.attach(7);  // 핀 7에 myservo3 연결
+  myservo4.attach(8);  // 핀 8에 myservo4 연결
+  myservo5.attach(9);  // 핀 9에 myservo5 연결
+  myservo6.attach(10); // 핀 10에 myservo6 연결
+  myservo7.attach(11); // 핀 11에 myservo7 연결
+  myservo8.attach(12); // 핀 12에 myservo8 연결
+
+  // 시리얼 통신 초기화
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available() > 0) {  // 시리얼 입력이 있을 경우
+    String input = Serial.readString();  // 입력 문자열을 읽어옴
+    int angles[8]; // 각 서보에 대한 각도 저장 배열
+    bool withDelay; // 딜레이 적용 여부
+    if (input.length() > 0) {
+      char command = input.charAt(0); // 첫 번째 문자를 명령으로 사용
+
+      // 모든 명령에 디폴트로 딜레이 적용
+      withDelay = true; 
+
+      // 명령에 따라 각도와 딜레이를 설정하고 서보를 이동시킴
+      if (command == 'a' || command == 'A') {
+        setAnglesForA(angles);
+        withDelay = false; // 'a' 명령에서는 딜레이 없이 동작
+        moveServoGroupA(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'b' || command == 'B') {
+        setAnglesForB(angles);
+        withDelay = false; // 'b' 명령에서는 딜레이와 함께 동작
+        moveServoGroupB(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'c' || command == 'C') {
+        setAnglesForC(angles);
+        setDelaysForC(delays);
+        withDelay = true; // 'c' 명령에서도 딜레이와 함께 동작
+        moveServoGroupC(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'd' || command == 'D') {
+        setAnglesForD(angles);
+        setDelaysForD(delays);
+        withDelay = true; // 'd' 명령에서도 딜레이와 함께 동작
+        moveServoGroupD(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'e' || command == 'E') {
+        setAnglesForE(angles);
+        setDelaysForE(delays);
+        withDelay = true; // 'e' 명령에서도 딜레이와 함께 동작
+        moveServoGroupE(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'f' || command == 'F') {
+        setAnglesForF(angles);
+        setDelaysForF(delays);
+        withDelay = true; // 'f' 명령에서도 딜레이와 함께 동작
+        moveServoGroupF(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'g' || command == 'G') {
+        setAnglesForG(angles);
+        setDelaysForG(delays);
+        withDelay = true; // 'g' 명령에서도 딜레이와 함께 동작
+        moveServoGroupG(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'h' || command == 'H') {
+        setAnglesForH(angles);
+        setDelaysForH(delays);
+        withDelay = true; // 'h' 명령에서도 딜레이와 함께 동작
+        moveServoGroupH(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'i' || command == 'I') {
+        setAnglesForI(angles);
+        setDelaysForI(delays);
+        withDelay = true; // 'i' 명령에서도 딜레이와 함께 동작
+        moveServoGroupI(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'j' || command == 'J') {
+        setAnglesForJ(angles);
+        setDelaysForJ(delays);
+        withDelay = true; // 'j' 명령에서도 딜레이와 함께 동작
+        moveServoGroupJ(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'k' || command == 'K') {
+        setAnglesForK(angles);
+        setDelaysForK(delays);
+        withDelay = true; // 'k' 명령에서도 딜레이와 함께 동작
+        moveServoGroupK(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'l' || command == 'L') {
+        setAnglesForL(angles);
+        setDelaysForL(delays);
+        withDelay = true; // 'l' 명령에서도 딜레이와 함께 동작
+        moveServoGroupL(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'm' || command == 'M') {
+        setAnglesForM(angles);
+        setDelaysForM(delays);
+        withDelay = true; // 'm' 명령에서도 딜레이와 함께 동작
+        moveServoGroupM(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'n' || command == 'N') {
+        setAnglesForN(angles);
+        setDelaysForN(delays);
+        withDelay = true; // 'n' 명령에서도 딜레이와 함께 동작
+        moveServoGroupN(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'o' || command == 'O') {
+        setAnglesForO(angles);
+        setDelaysForO(delays);
+        withDelay = true; // 'o' 명령에서도 딜레이와 함께 동작
+        moveServoGroupO(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'p' || command == 'P') {
+        setAnglesForP(angles);
+        setDelaysForP(delays);
+        withDelay = true; // 'p' 명령에서도 딜레이와 함께 동작
+        moveServoGroupP(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'q' || command == 'Q') {
+        setAnglesForQ(angles);
+        setDelaysForQ(delays);
+        withDelay = true; // 'q' 명령에서도 딜레이와 함께 동작
+        moveServoGroupQ(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 'r' || command == 'R') {
+        setAnglesForR(angles);
+        setDelaysForR(delays);
+        withDelay = true; // 'r' 명령에서도 딜레이와 함께 동작
+        moveServoGroupR(angles, withDelay); // Group 동작 함수 호출
+      } else if (command == 's' || command == 'S') {
+        setAnglesForS(angles);
+        setDelaysForS(delays);
+        withDelay = true; // 's' 명령에서도 딜레이와 함께 동작
+        moveServoGroupS(angles, withDelay); // Group 동작 함수 호출       
+      } else {
+        Serial.println("Invalid command. Please enter 'a' through 's'."); // 유효하지 않은 명령 처리
+        return;
+      }
+
+      // 서보의 각도를 시리얼 모니터에 출력합니다.
+      Serial.print("myservo1 angle: ");
+      Serial.print(angles[0]);
+      for (int i = 1; i < 8; i++) {  // 각 서보의 각도를 출력
+        Serial.print(", myservo");
+        Serial.print(i + 1);
+        Serial.print(" angle: ");
+        Serial.print(angles[i]);
+      }
+      Serial.println();  // 각도 출력 후 줄 바꿈
+    }
+  }
+}
+
+// 각도가 유효한지 확인하는 함수
+bool allAnglesValid(int angles[]) {
+  for (int i = 0; i < 8; i++) {
+    if (angles[i] < 0 || angles[i] > 180) {  // 각도가 0~180 사이인지 확인
+      return false;
+    }
+  }
+  return true;
+}
+
+// 'a' 입력 시 각도를 설정하는 함수
+void setAnglesForA(int angles[]) {
+  angles[0] = 10;
+  angles[1] = 10;
+  angles[2] = 135;
+  angles[3] = 170;
+  angles[4] = 180;
+  angles[5] = 165;
+  angles[6] = 60;
+  angles[7] = 10;
+}
+
+// 'b' 입력 시 각도를 설정하는 함수
+void setAnglesForB(int angles[]) {
+  angles[0] = 100;
+  angles[1] = 120;
+  angles[2] = 50;
+  angles[3] = 70;
+  angles[4] = 90;
+  angles[5] = 55;
+  angles[6] = 150;
+  angles[7] = 115;
+}
+
+// 'c' 입력 시 각도를 설정하는 함수
+void setAnglesForC(int angles[]) {
+  angles[0] = 180;
+  angles[1] = 0;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 90;
+  angles[5] = 55;
+  angles[6] = 150;
+  angles[7] = 120;
+}
+
+// 'd' 입력 시 각도를 설정하는 함수
+void setAnglesForD(int angles[]) {
+  angles[0] = 180;
+  angles[1] = 170;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 90;
+  angles[5] = 55;
+  angles[6] = 150;
+  angles[7] = 120;
+}
+
+// 'e' 입력 시 각도를 설정하는 함수
+void setAnglesForE(int angles[]) {
+  angles[0] = 180;
+  angles[1] = 170;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 90;
+  angles[5] = 55;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'f' 입력 시 각도를 설정하는 함수
+void setAnglesForF(int angles[]) {
+  angles[0] = 180;
+  angles[1] = 170;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 10;
+  angles[5] = 150;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'g' 입력 시 각도를 설정하는 함수
+void setAnglesForG(int angles[]) {
+  angles[0] = 180;
+  angles[1] = 170;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 10;
+  angles[5] = 0;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'h' 입력 시 각도를 설정하는 함수
+void setAnglesForH(int angles[]) {
+  angles[0] = 180;
+  angles[1] = 0;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 10;
+  angles[5] = 0;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'i' 입력 시 각도를 설정하는 함수
+void setAnglesForI(int angles[]) {
+  angles[0] = 0;
+  angles[1] = 30;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 10;
+  angles[5] = 0;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'j' 입력 시 각도를 설정하는 함수
+void setAnglesForJ(int angles[]) {
+  angles[0] = 0;
+  angles[1] = 30;
+  angles[2] = 80;
+  angles[3] = 70;
+  angles[4] = 10;
+  angles[5] = 20;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'k' 입력 시 각도를 설정하는 함수
+void setAnglesForK(int angles[]) {
+  angles[0] = 0;
+  angles[1] = 30;
+  angles[2] = 80;
+  angles[3] = 180;
+  angles[4] = 10;
+  angles[5] = 20;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'l' 입력 시 각도를 설정하는 함수
+void setAnglesForL(int angles[]) {
+  angles[0] = 0;
+  angles[1] = 30;
+  angles[2] = 180;
+  angles[3] = 180;
+  angles[4] = 10;
+  angles[5] = 20;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'm' 입력 시 각도를 설정하는 함수
+void setAnglesForM(int angles[]) {
+  angles[0] = 0;
+  angles[1] = 30;
+  angles[2] = 180;
+  angles[3] = 130;
+  angles[4] = 10;
+  angles[5] = 20;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'n' 입력 시 각도를 설정하는 함수
+void setAnglesForN(int angles[]) {
+  angles[0] = 0;
+  angles[1] = 30;
+  angles[2] = 140;
+  angles[3] = 130;
+  angles[4] = 10;
+  angles[5] = 20;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'o' 입력 시 각도를 설정하는 함수
+void setAnglesForO(int angles[]) {
+  angles[0] = 0;
+  angles[1] = 30;
+  angles[2] = 140;
+  angles[3] = 130;
+  angles[4] = 180;
+  angles[5] = 130;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'p' 입력 시 각도를 설정하는 함수
+void setAnglesForP(int angles[]) {
+  angles[0] = 60;
+  angles[1] = 0;
+  angles[2] = 120;
+  angles[3] = 110;
+  angles[4] = 180;
+  angles[5] = 125;
+  angles[6] = 120;
+  angles[7] = 120;
+}
+
+// 'q' 입력 시 각도를 설정하는 함수
+void setAnglesForQ(int angles[]) {
+  angles[0] = 60;
+  angles[1] = 0;
+  angles[2] = 120;
+  angles[3] = 110;
+  angles[4] = 180;
+  angles[5] = 125;
+  angles[6] = 120;
+  angles[7] = 0;
+}
+
+// 'r' 입력 시 각도를 설정하는 함수
+void setAnglesForR(int angles[]) {
+  angles[0] = 60;
+  angles[1] = 0;
+  angles[2] = 120;
+  angles[3] = 110;
+  angles[4] = 180;
+  angles[5] = 125;
+  angles[6] = 60;
+  angles[7] = 10;
+}
+
+// 's' 입력 시 각도를 설정하는 함수
+void setAnglesForS(int angles[]) {
+  angles[0] = 60;
+  angles[1] = 0;
+  angles[2] = 120;
+  angles[3] = 110;
+  angles[4] = 180;
+  angles[5] = 125;
+  angles[6] = 60;
+  angles[7] = 40;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// 'c' 입력 시 딜레이를 설정하는 함수
+void setDelaysForC(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'd' 입력 시 딜레이를 설정하는 함수
+void setDelaysForD(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'e' 입력 시 딜레이를 설정하는 함수
+void setDelaysForE(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'f' 입력 시 딜레이를 설정하는 함수
+void setDelaysForF(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'g' 입력 시 딜레이를 설정하는 함수
+void setDelaysForG(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'h' 입력 시 딜레이를 설정하는 함수
+void setDelaysForH(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'i' 입력 시 딜레이를 설정하는 함수
+void setDelaysForI(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'j' 입력 시 딜레이를 설정하는 함수
+void setDelaysForJ(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'k' 입력 시 딜레이를 설정하는 함수
+void setDelaysForK(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'l' 입력 시 딜레이를 설정하는 함수
+void setDelaysForL(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'm' 입력 시 딜레이를 설정하는 함수
+void setDelaysForM(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'n' 입력 시 딜레이를 설정하는 함수
+void setDelaysForN(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'o' 입력 시 딜레이를 설정하는 함수
+void setDelaysForO(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'p' 입력 시 딜레이를 설정하는 함수
+void setDelaysForP(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'q' 입력 시 딜레이를 설정하는 함수
+void setDelaysForQ(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 'r' 입력 시 딜레이를 설정하는 함수
+void setDelaysForR(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+// 's' 입력 시 딜레이를 설정하는 함수
+void setDelaysForS(int delays[]) {
+  delays[0] = 100;
+  delays[1] = 100;
+  delays[2] = 100;
+  delays[3] = 100;
+  delays[4] = 100;
+  delays[5] = 100;
+  delays[6] = 100;
+  delays[7] = 100;
+}
+
+////////////////////////////////////////////////////////////////////////////
+
+// 'a' 명령의 서보 그룹을 동시 이동시키는 함수 (다른 순서, 딜레이 없음)
+void moveServoGroupA(int angles[], bool withDelay) {
+  // Group 1: myservo1, myservo3, myservo5, myservo7 (먼저 동작)
+  moveServo(myservo1, angles[0], 0, 0, withDelay);
+  moveServo(myservo2, angles[1], 0, 1, withDelay);
+  moveServo(myservo3, angles[2], 0, 2, withDelay);
+  moveServo(myservo5, angles[4], 0, 4, withDelay);
+  moveServo(myservo7, angles[6], 0, 6, withDelay);
+
+  // Group 2: myservo2, myservo4, myservo6, myservo8 (나중 동작)
+  
+  moveServo(myservo4, angles[3], 0, 3, withDelay);
+  moveServo(myservo6, angles[5], 0, 5, withDelay);
+  moveServo(myservo8, angles[7], 0, 7, withDelay);
+}
+
+// 'b' 명령의 서보 그룹을 동시 이동시키는 함수 (다른 순서)
+void moveServoGroupB(int angles[], bool withDelay) {
+  // Group 1: myservo1, myservo3, myservo5, myservo7 (먼저 동작)
+  moveServo(myservo1, angles[0], 0, 0, withDelay);
+  moveServo(myservo2, angles[1], 0, 1, withDelay);
+  moveServo(myservo3, angles[2], 0, 2, withDelay);
+  moveServo(myservo5, angles[4], 0, 4, withDelay);
+  moveServo(myservo7, angles[6], 0, 6, withDelay);
+
+  // Group 2: myservo2, myservo4, myservo6, myservo8 (나중 동작)
+  
+  moveServo(myservo4, angles[3], 0, 3, withDelay);
+  moveServo(myservo6, angles[5], 0, 5, withDelay);
+  moveServo(myservo8, angles[7], 0, 7, withDelay);
+}
+
+// 'c' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupC(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'd' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupD(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'e' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupE(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'f' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupF(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+}
+
+// 'g' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupG(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'h' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupH(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'i' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupI(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'j' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupJ(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'k' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupK(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'l' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupL(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'm' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupM(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'n' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupN(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'o' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupO(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'p' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupP(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'q' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupQ(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 'r' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupR(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 's' 명령의 서보 그룹을 동시 이동시키는 함수 (또 다른 순서)
+void moveServoGroupS(int angles[], bool withDelay) {
+  // Group 1: myservo3, myservo4, myservo2, myservo5 (먼저 동작)
+  moveServo(myservo3, angles[2], delays[2], 2, withDelay);
+  moveServo(myservo4, angles[3], delays[3], 3, withDelay);
+  moveServo(myservo2, angles[1], delays[1], 1, withDelay);
+  moveServo(myservo5, angles[4], delays[4], 4, withDelay);
+
+  // Group 2: myservo7, myservo6, myservo1, myservo8 (나중 동작)
+  moveServo(myservo7, angles[6], delays[6], 6, withDelay);
+  moveServo(myservo6, angles[5], delays[5], 5, withDelay);
+  moveServo(myservo1, angles[0], delays[0], 0, withDelay);
+  moveServo(myservo8, angles[7], delays[7], 7, withDelay);
+}
+
+// 서보를 이동시키는 함수 (딜레이 옵션 추가)
+void moveServo(Servo &servo, int angle, int delayTime, int servoIndex, bool withDelay) {
+  if (angle != lastAngles[servoIndex]) {  // 서보의 각도가 마지막 각도와 다를 경우에만 이동
+    servo.write(angle);  // 서보를 지정된 각도로 이동
+    lastAngles[servoIndex] = angle;  // 마지막 각도를 업데이트
+  }
+  if (withDelay && delayTime > 0) {  // 딜레이가 필요한 경우
+    delay(delayTime); // 지정된 시간만큼 딜레이
+  }
+}
