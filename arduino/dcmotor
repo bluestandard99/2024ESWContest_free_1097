@@ -1,0 +1,167 @@
+const int motorPin1 = 6;  // Front-Left Motor IN1 (앞-왼쪽 모터 IN1)
+const int motorPin2 = 7;  // Front-Left Motor IN2 (앞-왼쪽 모터 IN2)
+const int enablePinA = 2; // Front-Left Motor ENA (앞-왼쪽 모터 ENA)
+
+const int motorPin3 = 8;  // Front-Right Motor IN1 (앞-오른쪽 모터 IN1)
+const int motorPin4 = 9;  // Front-Right Motor IN2 (앞-오른쪽 모터 IN2)
+const int enablePinB = 3; // Front-Right Motor ENA (앞-오른쪽 모터 ENA)
+
+const int motorPin5 = 10; // Back-Left Motor IN1 (뒤-왼쪽 모터 IN1)
+const int motorPin6 = 11; // Back-Left Motor IN2 (뒤-왼쪽 모터 IN2)
+const int enablePinC = 4; // Back-Left Motor ENA (뒤-왼쪽 모터 ENA)
+
+const int motorPin7 = 12; // Back-Right Motor IN1 (뒤-오른쪽 모터 IN1)
+const int motorPin8 = 13; // Back-Right Motor IN2 (뒤-오른쪽 모터 IN2)
+const int enablePinD = 5; // Back-Right Motor ENA (뒤-오른쪽 모터 ENA)
+
+void setup() {
+  // 각 모터 핀을 출력 모드로 설정
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+  pinMode(enablePinA, OUTPUT);
+
+  pinMode(motorPin3, OUTPUT);
+  pinMode(motorPin4, OUTPUT);
+  pinMode(enablePinB, OUTPUT);
+
+  pinMode(motorPin5, OUTPUT);
+  pinMode(motorPin6, OUTPUT);
+  pinMode(enablePinC, OUTPUT);
+
+  pinMode(motorPin7, OUTPUT);
+  pinMode(motorPin8, OUTPUT);
+  pinMode(enablePinD, OUTPUT);
+
+  Serial.begin(9600); // 시리얼 통신 시작 (모니터링 용)
+}
+
+void loop() {
+  if (Serial.available() > 0) {  // 시리얼 입력이 있을 경우
+    char command = Serial.read();  // 입력 명령을 읽음
+    
+    switch (command) {  // 명령에 따라 동작 선택
+      case 'z':
+        moveForward(200, 600);  // 전진, 속도 200, 600ms 유지
+        break;
+      case 'y':
+        moveForward(200, 500); // 후진, 속도 200, 500ms 유지
+        break;
+      case 'x':
+        moveForward(200, 400);     // 좌회전, 속도 200, 400ms 유지
+        break;
+      case 'w':
+        moveForward(200, 200);    // 우회전, 속도 200, 200ms 유지
+        break;
+      case 'v':
+        moveBackward(200, 250); // 후진, 속도 200, 250ms 유지
+        /*stopMotors(1000);*/        // 정지, 1000ms 유지 (현재 주석 처리됨)
+        break;
+      default:
+        Serial.println("Invalid command. Use 'a', 'b', 'c', 'd', or 'e'."); // 유효하지 않은 명령 처리
+        break;
+    }
+  }
+}
+
+void moveForward(int speed, int duration) {
+  // 모터를 전진 방향으로 동작
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, HIGH);
+  analogWrite(enablePinA, speed);
+
+  digitalWrite(motorPin3, LOW);
+  digitalWrite(motorPin4, HIGH);
+  analogWrite(enablePinB, speed);
+
+  digitalWrite(motorPin5, HIGH);
+  digitalWrite(motorPin6, LOW);
+  analogWrite(enablePinC, speed);
+
+  digitalWrite(motorPin7, LOW);
+  digitalWrite(motorPin8, HIGH);
+  analogWrite(enablePinD, speed);
+
+  Serial.println("Moving Forward");
+  delay(duration); // 설정된 시간 동안 동작 유지
+  stopMotors(1000); // 1초 동안 정지 유지
+}
+
+void moveBackward(int speed, int duration) {
+  // 모터를 후진 방향으로 동작
+  digitalWrite(motorPin1, HIGH);
+  digitalWrite(motorPin2, LOW);
+  analogWrite(enablePinA, speed);
+
+  digitalWrite(motorPin3, HIGH);
+  digitalWrite(motorPin4, LOW);
+  analogWrite(enablePinB, speed);
+
+  digitalWrite(motorPin5, LOW);
+  digitalWrite(motorPin6, HIGH);
+  analogWrite(enablePinC, speed);
+
+  digitalWrite(motorPin7, HIGH);
+  digitalWrite(motorPin8, LOW);
+  analogWrite(enablePinD, speed);
+
+  Serial.println("Moving Backward");
+  delay(duration); // 설정된 시간 동안 동작 유지
+  stopMotors(1000); // 1초 동안 정지 유지
+}
+
+void turnLeft(int speed, int duration) {
+  // 좌회전 동작 (왼쪽 바퀴 정지, 오른쪽 바퀴 회전)
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, HIGH);
+  analogWrite(enablePinA, 0); // 왼쪽 바퀴 정지
+
+  digitalWrite(motorPin3, LOW);
+  digitalWrite(motorPin4, HIGH);
+  analogWrite(enablePinB, speed); // 오른쪽 바퀴 회전
+
+  digitalWrite(motorPin5, HIGH);
+  digitalWrite(motorPin6, LOW);
+  analogWrite(enablePinC, 0); // 왼쪽 바퀴 정지
+
+  digitalWrite(motorPin7, LOW);
+  digitalWrite(motorPin8, HIGH);
+  analogWrite(enablePinD, speed); // 오른쪽 바퀴 회전
+
+  Serial.println("Turning Left");
+  delay(duration); // 설정된 시간 동안 동작 유지
+  stopMotors(1000); // 1초 동안 정지 유지
+}
+
+void turnRight(int speed, int duration) {
+  // 우회전 동작 (오른쪽 바퀴 정지, 왼쪽 바퀴 회전)
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, HIGH);
+  analogWrite(enablePinA, speed); // 왼쪽 바퀴 회전
+
+  digitalWrite(motorPin3, LOW);
+  digitalWrite(motorPin4, HIGH);
+  analogWrite(enablePinB, 0); // 오른쪽 바퀴 정지
+
+  digitalWrite(motorPin5, HIGH);
+  digitalWrite(motorPin6, LOW);
+  analogWrite(enablePinC, speed); // 왼쪽 바퀴 회전
+
+  digitalWrite(motorPin7, LOW);
+  digitalWrite(motorPin8, HIGH);
+  analogWrite(enablePinD, 0); // 오른쪽 바퀴 정지
+
+  Serial.println("Turning Right");
+  delay(duration); // 설정된 시간 동안 동작 유지
+  stopMotors(1000); // 1초 동안 정지 유지
+}
+
+void stopMotors(int stopDuration) {
+  // 모든 모터를 정지시킴
+  analogWrite(enablePinA, 0);
+  analogWrite(enablePinB, 0);
+  analogWrite(enablePinC, 0);
+  analogWrite(enablePinD, 0);
+
+  Serial.println("Motors Stopped");
+  delay(stopDuration); // 설정된 시간 동안 정지 유지
+}
