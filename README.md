@@ -4,7 +4,7 @@
  
 메인 라즈베리파이 코드: rpi-bookworm-yolov8-main/detection.py
  
-YOLO 학습 이미지들:  rpi-bookworm-yolov8-main/imagese
+YOLO 학습 이미지들:  rpi-bookworm-yolov8-main/images
  
 YOLO 학습 이미지 찍기 위한 코드: rpi-bookworm-yolov8-main/cam.py
  
